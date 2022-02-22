@@ -9,7 +9,7 @@ Created on Fri Feb 18 13:34:08 2022
 from load_data import *
 from PCA import *
 
-from matplotlib.pyplot import figure, subplot, plot, legend, show,  xlabel, ylabel, xticks, yticks
+from matplotlib.pyplot import boxplot, title, figure, subplot, plot, legend, show,  xlabel, ylabel, xticks, yticks
 import numpy as np
 from scipy.io import loadmat
 from scipy.stats import zscore
@@ -19,7 +19,8 @@ from scipy.stats import zscore
 figure()
 title('Glass: Boxplot')
 boxplot(X_PCA)
-xticks(range(1,M+1), attributeNames, rotation=45)
+xticks(range(1,M), list(attributeNames_PCA), rotation=45)
+
 
 # From this it is clear that there are some outliers in the Alcohol
 # attribute (10x10^14 is clearly not a proper value for alcohol content)
@@ -28,8 +29,8 @@ xticks(range(1,M+1), attributeNames, rotation=45)
 # box plot of standardized data (using the zscore function).
 figure(figsize=(12,6))
 title('Glass: Boxplot (standarized)')
-boxplot(zscore(X_PCA, ddof=1), attributeNames)
-xticks(range(1,M+1), attributeNames, rotation=45)
+boxplot(zscore(X_PCA, ddof=1), attributeNames_PCA)
+xticks(range(1,M+1), attributeNames_PCA, rotation=45)
 
 # This plot reveals that there are clearly some outliers in the Volatile
 # acidity, Density, and Alcohol attributes, i.e. attribute number 2, 8,
@@ -38,7 +39,7 @@ xticks(range(1,M+1), attributeNames, rotation=45)
 # Next, we plot histograms of all attributes.
 figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
-for i in range(M):
+for i in range(M-1):
     subplot(u,v,i+1)
     hist(X_PCA[:,i])
     xlabel(attributeNames[i])
