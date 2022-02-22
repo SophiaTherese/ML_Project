@@ -53,7 +53,7 @@ from scipy.linalg import svd
 # Subtract mean value from data
 Y = X - np.ones((N,1))*X.mean(0)
 #if we want to standardize by dividing by the standard deviation
-Y = Y*(1/np.std(Y,0))
+#Y = Y*(1/np.std(Y,0))
 
 
 # PCA by computing SVD of Y
