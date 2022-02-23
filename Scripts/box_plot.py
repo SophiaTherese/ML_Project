@@ -7,19 +7,39 @@ Created on Fri Feb 18 13:34:08 2022
 """
 
 from load_data import *
-from PCA import *
+
 
 from matplotlib.pyplot import boxplot, title, figure, subplot, plot, legend, show,  xlabel, ylabel, xticks, yticks
 import numpy as np
-from scipy.io import loadmat
 from scipy.stats import zscore
+import matplotlib.pyplot as plt
+
+
+
+#Jeg ved godt at du siger man ikke skal definere det sådan her, men gør det
+#indtil vi får ryttet op. 
+cols = range(1, 10) 
+X = raw_data[:, cols]
+attributeNames = np.array(['RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe'])
+N, M = X.shape
+
+
+#KUNNE IKKE FÅ DERES NORMALISERING TIL AT VIRKE SÅ BRUGTE DEN FRA PCA:
+# Subtract mean value from data
+Y = X - np.ones((N,1))*X.mean(0)
+#To standardize, we dividing by the standard deviation
+Y = Y*(1/np.std(Y,0))
 
 
 # We start with a box plot of each attribute
-figure()
-title('Glass: Boxplot')
-boxplot(X_PCA)
-xticks(range(1,M), list(attributeNames_PCA), rotation=45)
+plt.figure(figsize=(15,5))
+title('Boxplots of attributes')
+boxplot(Y)
+plt.xticks(range(1,M+1), list(attributeNames), rotation=45)
+
+
+
+
 
 
 # From this it is clear that there are some outliers in the Alcohol
@@ -27,21 +47,21 @@ xticks(range(1,M), list(attributeNames_PCA), rotation=45)
 # However, it is impossible to see the distribution of the data, because
 # the axis is dominated by these extreme outliers. To avoid this, we plot a
 # box plot of standardized data (using the zscore function).
-figure(figsize=(12,6))
-title('Glass: Boxplot (standarized)')
-boxplot(zscore(X_PCA, ddof=1), attributeNames_PCA)
-xticks(range(1,M+1), attributeNames_PCA, rotation=45)
 
-# This plot reveals that there are clearly some outliers in the Volatile
-# acidity, Density, and Alcohol attributes, i.e. attribute number 2, 8,
-# and 11. 
+#plt.figure(figsize=(12,6))
+#title('Glass: Boxplot (standarized)')
+#boxplot(zscore(X, ddof=1), attributeNames)
+#xticks(range(1,M+1), attributeNames, rotation=45)
+
+
 
 # Next, we plot histograms of all attributes.
+
 figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
 for i in range(M-1):
     subplot(u,v,i+1)
-    hist(X_PCA[:,i])
+    hist(X[:,i])
     xlabel(attributeNames[i])
     ylim(0, N) # Make the y-axes equal for improved readability
     if i%v!=0: yticks([])
@@ -51,11 +71,12 @@ for i in range(M-1):
 # This confirms our belief about outliers in attributes 2, 8, and 11.
 # To take a closer look at this, we next plot histograms of the 
 # attributes we suspect contains outliers
-figure(figsize=(14,9))
+
+h2 = plt.figure(figsize=(14,9))
 m = [1, 7, 10]
 for i in range(len(m)):
     subplot(1,len(m),i+1)
-    hist(X_PCA[:,m[i]],50)
+    hist(X[:,m[i]],50)
     xlabel(attributeNames[m[i]])
     ylim(0, N) # Make the y-axes equal for improved readability
     if i>0: yticks([])
