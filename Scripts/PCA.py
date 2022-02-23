@@ -7,18 +7,29 @@ Created on Tue Feb  8 16:53:32 2022
 """
 from load_data import *
 
-import matplotlib.pyplot as plt
+
+
+from matplotlib.pyplot import figure, plot, title, xlabel, ylabel, show, legend
+
 from scipy.linalg import svd
+
+import matplotlib.pyplot as plt
+
 
 
 cols = range(1, 10) 
 X_PCA = X[:, cols]
 attributeNames_PCA = np.array(attributeNames[1:]);
-
+N_PCA, M_PCA = X_PCA.shape
 
 
 # Subtract mean value from data
-Y = X_PCA - np.ones((N,1))*X_PCA.mean(axis=0)
+Y = X_PCA - np.ones((N_PCA,1))*X_PCA.mean(0)
+#To standardize, we dividing by the standard deviation
+Y = Y*(1/np.std(Y,0))
+
+# Subtract mean value from data
+#Y = X_PCA - np.ones((N,1))*X_PCA.mean(axis=0)
 
 # PCA by computing SVD of Y
 U,S,V = svd(Y,full_matrices=False)
@@ -40,20 +51,12 @@ plt.legend(['Individual','Cumulative','Threshold'])
 plt.grid()
 plt.show()
 
-print('Ran PCA')
+#print('Ran PCA')
 
 
 # exercise 2.1.4
 # (requires data structures from ex. 2.2.1 and 2.2.3)
 #from ex2_1_1 import *
-
-from matplotlib.pyplot import figure, plot, title, xlabel, ylabel, show, legend
-from scipy.linalg import svd
-
-# Subtract mean value from data
-Y = X - np.ones((N,1))*X.mean(0)
-#if we want to standardize by dividing by the standard deviation
-#Y = Y*(1/np.std(Y,0))
 
 
 # PCA by computing SVD of Y
@@ -90,7 +93,7 @@ pcs = [0,1,2,3]
 legendStrs = ['PC'+str(e+1) for e in pcs]
 c = ['r','g','b','y']
 bw = .2
-r = np.arange(1,M+1)
+r = np.arange(1,M_PCA+1)
 for i in pcs:    
     plt.bar(r+i*bw, V[:,i], width=bw)
 plt.xticks(r+bw, attributeNames_PCA)
@@ -98,7 +101,7 @@ plt.xlabel('Attributes')
 plt.ylabel('Component coefficients')
 plt.legend(legendStrs)
 plt.grid()
-plt.title('NanoNose: PCA Component Coefficients')
+plt.title('PCA Component Coefficients')
 plt.show()
 
 # Inspecting the plot, we see that the 2nd principal component has large
