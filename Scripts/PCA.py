@@ -93,7 +93,7 @@ pcs = [0,1,2,3]
 legendStrs = ['PC'+str(e+1) for e in pcs]
 c = ['r','g','b','y']
 bw = .2
-r = np.arange(1,M_PCA+1)
+r = np.arange(0,M_PCA+1)
 for i in pcs:    
     plt.bar(r+i*bw, V[:,i], width=bw)
 plt.xticks(r+bw, attributeNames_PCA)
