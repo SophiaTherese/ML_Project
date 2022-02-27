@@ -11,7 +11,6 @@ Created on Tue Feb  8 16:02:44 2022
 # "classification format":
 from load_data import *
 
-import numpy as np
 import matplotlib.pyplot as plt
 
 ## Classification problem

@@ -8,23 +8,9 @@ Created on Fri Feb 18 13:34:08 2022
 
 from load_data import *
 
-
-from matplotlib.pyplot import boxplot, hist, title, figure, subplot, plot, legend, show,  xlabel, ylabel, xticks, yticks, ylim
-import numpy as np
-from scipy.stats import zscore
 import matplotlib.pyplot as plt
 
-
-
-#Jeg ved godt at du siger man ikke skal definere det sådan her, men gør det
-#indtil vi får ryttet op. 
-cols = range(1, 10) 
-X = raw_data[:, cols]
-attributeNames = np.array(['RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe'])
-N, M = X.shape
-
-
-#KUNNE IKKE FÅ DERES NORMALISERING TIL AT VIRKE SÅ BRUGTE DEN FRA PCA:
+# Normalise data to see distribution and identify outliers
 # Subtract mean value from data
 Y = X - np.ones((N,1))*X.mean(0)
 #To standardize, we dividing by the standard deviation
@@ -33,56 +19,39 @@ Y = Y*(1/np.std(Y,0))
 
 # We start with a box plot of each attribute
 plt.figure(figsize=(15,5))
-title('Boxplots of attributes')
-boxplot(Y)
+plt.title('Boxplots of attributes')
+plt.boxplot(Y)
 plt.xticks(range(1,M+1), list(attributeNames), rotation=45)
-
-
-
-
-
-
-# From this it is clear that there are some outliers in the Alcohol
-# attribute (10x10^14 is clearly not a proper value for alcohol content)
-# However, it is impossible to see the distribution of the data, because
-# the axis is dominated by these extreme outliers. To avoid this, we plot a
-# box plot of standardized data (using the zscore function).
-
-#plt.figure(figsize=(12,6))
-#title('Glass: Boxplot (standarized)')
-#boxplot(zscore(X, ddof=1), attributeNames)
-#xticks(range(1,M+1), attributeNames, rotation=45)
-
 
 
 # Next, we plot histograms of all attributes.
 
-figure(figsize=(14,9))
+plt.figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
 for i in range(M):
-    subplot(u,v,i+1)
-    hist(X[:,i])
-    xlabel(attributeNames[i])
-    ylim(0, N) # Make the y-axes equal for improved readability
-    if i%v!=0: yticks([])
-    if i==0: title('Wine: Histogram')
+    plt.subplot(u,v,i+1)
+    plt.hist(X[:,i])
+    plt.xlabel(attributeNames[i])
+    plt.ylim(0, N) # Make the y-axes equal for improved readability
+    if i%v!=0: plt.yticks([])
+    if i==0: plt.title('Wine: Histogram')
     
 
-# This confirms our belief about outliers in attributes 2, 8, and 11.
+# This confirms our belief about outliers in attributes Na and K.
 # To take a closer look at this, we next plot histograms of the 
 # attributes we suspect contains outliers
 
 h2 = plt.figure(figsize=(14,9))
 m = [1, 5]
 for i in range(len(m)):
-    subplot(1,len(m),i+1)
-    hist(X[:,m[i]],50)
-    xlabel(attributeNames[m[i]])
-    ylim(0, N) # Make the y-axes equal for improved readability
-    if i>0: yticks([])
-    if i==0: title('Wine: Histogram (selected attributes)')
+    plt.subplot(1,len(m),i+1)
+    plt.hist(X[:,m[i]],50)
+    plt.xlabel(attributeNames[m[i]])
+    plt.ylim(0, N) # Make the y-axes equal for improved readability
+    if i>0: plt.yticks([])
+    if i==0: plt.title('Wine: Histogram (selected attributes)')
 
-
+# TODO: analyse af outliers baseret på domænet, fjerne outliers
 # The histograms show that there are a few very extreme values in these
 # three attributes. To identify these values as outliers, we must use our
 # knowledge about the data set and the attributes. Say we expect volatide
@@ -101,19 +70,19 @@ for i in range(len(m)):
 
 # Now, we can repeat the process to see if there are any more outliers
 # present in the data. We take a look at a histogram of all attributes:
-figure(figsize=(14,9))
+plt.figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
 for i in range(M):
-    subplot(u,v,i+1)
-    hist(X[:,i])
-    xlabel(attributeNames[i])
-    ylim(0, N) # Make the y-axes equal for improved readability
-    if i%v!=0: yticks([])
-    if i==0: title('Wine: Histogram (after outlier detection)')
+    plt.subplot(u,v,i+1)
+    plt.hist(X[:,i])
+    plt.xlabel(attributeNames[i])
+    plt.ylim(0, N) # Make the y-axes equal for improved readability
+    if i%v!=0: plt.yticks([])
+    if i==0: plt.title('Wine: Histogram (after outlier detection)')
 
 # This reveals no further outliers, and we conclude that all outliers have
 # been detected and removed.
 
-show()
+plt.show()
 
 print('Ran Exercise 4.3.1')
