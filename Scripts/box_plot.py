@@ -9,7 +9,7 @@ Created on Fri Feb 18 13:34:08 2022
 from load_data import *
 
 
-from matplotlib.pyplot import boxplot, title, figure, subplot, plot, legend, show,  xlabel, ylabel, xticks, yticks
+from matplotlib.pyplot import boxplot, hist, title, figure, subplot, plot, legend, show,  xlabel, ylabel, xticks, yticks, ylim
 import numpy as np
 from scipy.stats import zscore
 import matplotlib.pyplot as plt
@@ -59,7 +59,7 @@ plt.xticks(range(1,M+1), list(attributeNames), rotation=45)
 
 figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
-for i in range(M-1):
+for i in range(M):
     subplot(u,v,i+1)
     hist(X[:,i])
     xlabel(attributeNames[i])
@@ -73,7 +73,7 @@ for i in range(M-1):
 # attributes we suspect contains outliers
 
 h2 = plt.figure(figsize=(14,9))
-m = [1, 7, 10]
+m = [1, 5]
 for i in range(len(m)):
     subplot(1,len(m),i+1)
     hist(X[:,m[i]],50)
@@ -105,7 +105,7 @@ figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
 for i in range(M):
     subplot(u,v,i+1)
-    hist(X_PCA[:,i])
+    hist(X[:,i])
     xlabel(attributeNames[i])
     ylim(0, N) # Make the y-axes equal for improved readability
     if i%v!=0: yticks([])

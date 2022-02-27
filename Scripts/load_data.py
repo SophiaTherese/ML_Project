@@ -11,40 +11,33 @@ import numpy as np
 import pandas as pd
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-# Load the Iris csv data using the Pandas library
+# Load the Glass csv data using the Pandas library
 filename = '../Data/glass.data'
 
 # List of attribute names, does not appear in data file and is thus added manually
-attributeNames = np.array(['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe', 'Type of glass'])
-df = pd.read_csv(filename, names=attributeNames)
-print(df[['Ba', 'Type of glass']])
-print(df.loc[df['Ba'] > 0])
+attributeNames_all = np.array(['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe', 'Type of glass'])
+df = pd.read_csv(filename, names=attributeNames_all)
 
 print("Missing values:", df.isnull().values.any())
-print(df[['RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe']].describe().transpose())
-# Pandas returns a dataframe, (df) which could be used for handling the data.
-# We will however convert the dataframe to numpy arrays for this course as 
-# is also described in the table in the exercise
+
+# Pandas returns a dataframe (df), which we will convert to numpy arrays for this project.
 raw_data = df.values  
 
 # Notice that raw_data both contains the information we want to store in an array
-# X (the sepal and petal dimensions) and the information that we wish to store 
-# in y (the class labels, that is the iris species).
+# X (RI and chemical composition data) and the information that we wish to store 
+# in y (the class labels, that is the glass type).
 
 # We start by making the data matrix X by indexing into data.
-# We know that the attributes are stored in the four columns from inspecting 
+# We know that the attributes (excluding ID) are stored in column 1-10 from inspecting 
 # the file.
-cols = range(0, 10) 
+cols = range(1, 10) 
 X = raw_data[:, cols]
+attributeNames = attributeNames_all.tolist()[1:-1]
+# A closer look at the attributes:
+print(df[attributeNames].describe().transpose())
 
-# Before we can store the class index, we need to convert the strings that
-# specify the class of a given object to a numerical value. We start by 
-# extracting the strings for each sample from the raw data loaded from the csv:
-    
+# Store the class indices present in the dataset, manually add labels
 y = raw_data[:,-1] # -1 takes the last column
-# classLabels = ['navn på den første', ..]
-# Then determine which classes are in the data by finding the set of 
-# unique class labels 
 classNames = np.unique(y)
 classLabels = ['building_windows_float_processed',
                'building_windows_non_float_processed',
@@ -52,7 +45,6 @@ classLabels = ['building_windows_float_processed',
                'containers',
                'tableware',
                'headlamps']
-
 
 
 # We can determine the number of data objects and number of attributes using 

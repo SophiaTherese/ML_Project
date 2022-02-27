@@ -7,29 +7,17 @@ Created on Tue Feb  8 16:53:32 2022
 """
 from load_data import *
 
-
-
-from matplotlib.pyplot import figure, plot, title, xlabel, ylabel, show, legend
-
 from scipy.linalg import svd
-
 import matplotlib.pyplot as plt
 
 
-
-cols = range(1, 10) 
-X_PCA = X[:, cols]
-attributeNames_PCA = np.array(attributeNames[1:]);
-N_PCA, M_PCA = X_PCA.shape
-
-
 # Subtract mean value from data
-Y = X_PCA - np.ones((N_PCA,1))*X_PCA.mean(0)
+Y = X - np.ones((N,1))*X.mean(0)
 #To standardize, we dividing by the standard deviation
 Y = Y*(1/np.std(Y,0))
 
 # Subtract mean value from data
-#Y = X_PCA - np.ones((N,1))*X_PCA.mean(axis=0)
+#Y = X - np.ones((N,1))*X.mean(axis=0)
 
 # PCA by computing SVD of Y
 U,S,V = svd(Y,full_matrices=False)
@@ -51,14 +39,6 @@ plt.legend(['Individual','Cumulative','Threshold'])
 plt.grid()
 plt.show()
 
-#print('Ran PCA')
-
-
-# exercise 2.1.4
-# (requires data structures from ex. 2.2.1 and 2.2.3)
-#from ex2_1_1 import *
-
-
 # PCA by computing SVD of Y
 U,S,Vh = svd(Y,full_matrices=False)
 # scipy.linalg.svd returns "Vh", which is the Hermitian (transpose)
@@ -73,19 +53,17 @@ i = 0
 j = 1
 
 # Plot PCA of the data
-f = figure()
-title('NanoNose data: PCA')
+plt.figure()
+plt.title('NanoNose data: PCA')
 #Z = array(Z)
 for c in range(C):
     # select indices belonging to class c:
     class_mask = y==c
-    plot(Z[class_mask,i], Z[class_mask,j], 'o', alpha=.5)
-legend(classNames)
-xlabel('PC{0}'.format(i+1))
-ylabel('PC{0}'.format(j+1))
-
-# Output result to screen
-show()
+    plt.plot(Z[class_mask,i], Z[class_mask,j], 'o', alpha=.5)
+plt.legend(classNames)
+plt.xlabel('PC{0}'.format(i+1))
+plt.ylabel('PC{0}'.format(j+1))
+plt.show()
 
 
 
@@ -93,10 +71,10 @@ pcs = [0,1,2,3]
 legendStrs = ['PC'+str(e+1) for e in pcs]
 c = ['r','g','b','y']
 bw = .2
-r = np.arange(0,M_PCA+1)
+r = np.arange(0,M)
 for i in pcs:    
     plt.bar(r+i*bw, V[:,i], width=bw)
-plt.xticks(r+bw, attributeNames_PCA)
+plt.xticks(r+bw, attributeNames)
 plt.xlabel('Attributes')
 plt.ylabel('Component coefficients')
 plt.legend(legendStrs)
