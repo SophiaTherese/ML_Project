@@ -32,26 +32,22 @@ print(corr)
 #Når følgende plot laves kan jeg ikke ændre størrelsen, hvilket gør det meget utydeligt. 
 #Desuden legenden ikke fra 0 til 1, men ved ikke hvordan man fixer det.
 # Fill diagonal and upper half with NaNs
-f = plt.figure(figsize=(50, 30))
 mask = np.zeros_like(corr, dtype=bool)
 mask[np.triu_indices_from(mask)] = True
 corr[mask] = np.nan
-(corr 
- .style
- .background_gradient(cmap='BrBG_r', axis=None, vmin=-1, vmax=1)
- .highlight_null(null_color='#FFFFFF')  # Color NaNs white
- .set_precision(2))
 
-plt.matshow(corr)
-plt.xticks(r-1, attributeNames, fontsize=8, rotation=45)
-plt.yticks(r-1, attributeNames,fontsize=8, rotation=45)
+f = plt.figure(figsize=(19, 15))
+plt.matshow(corr, fignum=f.number, cmap='RdPu')
+plt.xticks(r-1, attributeNames, fontsize=20, rotation=45)
+plt.yticks(r-1, attributeNames,fontsize=20, rotation=45)
 cb = plt.colorbar()
-cb.ax.tick_params(labelsize=6)
-plt.title('Correlation Matrix', fontsize=12);
+cb.ax.tick_params(labelsize=20)
+plt.title('Correlation Matrix', fontsize=24);
+plt.show()
 
 #Dette plot virker fint
 z = plt.figure(figsize=(19, 15))
-plt.matshow(df.corr(), fignum=z.number)
+plt.matshow(df.corr(), fignum=z.number, cmap='pink')
 #plt.xticks(range(df.select_dtypes(['number']).shape[1]), attributeNames.object, fontsize=16, rotation=45)
 plt.xticks(r-1, attributeNames, fontsize=20, rotation=45)
 #plt.yticks(range(df.select_dtypes(['number']).shape[1]), df.select_dtypes(['number']).columns, fontsize=14)
@@ -59,5 +55,7 @@ plt.yticks(r-1, attributeNames,fontsize=20, rotation=45)
 cb = plt.colorbar()
 cb.ax.tick_params(labelsize=20)
 plt.title('Correlation Matrix', fontsize=24);
+plt.show()
+
 
 
