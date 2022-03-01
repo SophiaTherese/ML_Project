@@ -37,10 +37,10 @@ mask[np.triu_indices_from(mask)] = True
 corr[mask] = np.nan
 
 f = plt.figure(figsize=(19, 15))
-plt.matshow(corr, fignum=f.number, cmap='RdPu')
+plt.matshow(corr, fignum=f.number, cmap='PiYG', vmin=-1, vmax=1)
 plt.xticks(r-1, attributeNames, fontsize=20, rotation=45)
 plt.yticks(r-1, attributeNames,fontsize=20, rotation=45)
-cb = plt.colorbar()
+cb = plt.colorbar(format = '%.1f', label='Correlation', ticks=np.arange(-1,1.1,0.2))
 cb.ax.tick_params(labelsize=20)
 plt.title('Correlation Matrix', fontsize=24);
 plt.show()
