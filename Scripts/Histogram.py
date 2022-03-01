@@ -35,10 +35,10 @@ plt.show()
 plt.figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); 
 v = np.ceil(float(M)/u)
-for i in range(1,M):
+for i in range(M):
     plt.subplot(u,v,i+1)
     plt.hist(X[:,i])
     plt.xlabel(attributeNames[i])
     plt.ylim(0, N) # Make the y-axes equal for improved readability
     if i%v!=0: plt.yticks([])
-    if i==0: title('Wine: Histogram')
+    if i==0: plt.title('Glass Attributes: Histogram')
