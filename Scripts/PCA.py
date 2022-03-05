@@ -30,8 +30,8 @@ threshold = 0.90
 
 # Plot variance explained
 plt.figure()
-plt.plot(range(1,len(rho)+1),rho,'x-')
-plt.plot(range(1,len(rho)+1),np.cumsum(rho),'o-')
+plt.plot(range(1,len(rho)+1),rho,'x-', color='tab:pink')
+plt.plot(range(1,len(rho)+1),np.cumsum(rho),'o-', color='tab:green')
 plt.plot([1,len(rho)],[threshold, threshold],'k--')
 plt.title('Variance explained by principal components');
 plt.xlabel('Principal component');
