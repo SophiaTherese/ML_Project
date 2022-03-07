@@ -82,7 +82,6 @@ plt.title('PCA Component Coefficients')
 plt.show()
 
 
-# TODO: Check kommentarer
 # Inspecting the plot, we see that the 2nd principal component has large
 # (in magnitude) coefficients for attributes A, E and H. We can confirm
 # this by looking at it's numerical values directly, too:

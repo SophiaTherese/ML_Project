@@ -26,7 +26,6 @@ plt.xticks(range(1,M+1), list(attributeNames), rotation=45)
 
 
 # Next, we plot histograms of all attributes.
-
 plt.figure(figsize=(14,9))
 u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
 for i in range(M):
@@ -35,5 +34,5 @@ for i in range(M):
     plt.xlabel(attributeNames[i], verticalalignment='center_baseline')
     plt.ylim(0, N) # Make the y-axes equal for improved readability
     if i%v!=0: plt.yticks([])
-    if i==0: plt.title('Distribution of Attributes')
+    if i==1: plt.title('Distribution of Attributes', fontsize=20)
     
