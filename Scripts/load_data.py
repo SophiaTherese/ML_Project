@@ -3,7 +3,7 @@
 """
 Created on Tue Feb  1 16:35:11 2022
 
-@author: Sophia
+@author: Sophia Wesche s173828, Simone Engelbrecht s174276, Aidana Nursultanova s212994
 """
 
 # From exercise 1.5.1
@@ -37,7 +37,8 @@ attributeNames = attributeNames_all.tolist()[1:-1]
 print(df[attributeNames].describe().transpose())
 
 # Store the class indices present in the dataset, manually add labels
-y = raw_data[:,-1] # -1 takes the last column
+y = raw_data[:,-1].astype(int) # -1 takes the last column
+
 classNames = np.unique(y)
 classLabels = ['building_windows_float_processed',
                'building_windows_non_float_processed',

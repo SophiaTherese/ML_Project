@@ -3,7 +3,7 @@
 """
 Created on Tue Feb 22 17:33:04 2022
 
-@author: Sophia
+@author: Sophia Wesche s173828, Simone Engelbrecht s174276, Aidana Nursultanova s212994
 """
 
 from load_data import *
@@ -13,51 +13,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-#I følgende benytter jeg: https://stackoverflow.com/questions/29432629/plot-correlation-matrix-using-pandas
-
-#rs = np.random.RandomState(0)
-#df = pd.DataFrame(rs.rand(10, 10))
+# 
 df = pd.DataFrame(X)
 corr = df.corr()
 
-#Defining range:
-r = np.arange(1,M+1)
+# Defining range:
+r = np.arange(M)
 
-print(corr)
-
-#corr.style.background_gradient(cmap='BrBG_r').set_precision(2)
-# 'RdBu_r', 'BrBG_r', & PuOr_r 'coolwarm' are other good diverging colormaps
-
-
-#Når følgende plot laves kan jeg ikke ændre størrelsen, hvilket gør det meget utydeligt. 
-#Desuden legenden ikke fra 0 til 1, men ved ikke hvordan man fixer det.
 # Fill diagonal and upper half with NaNs
-f = plt.figure(figsize=(50, 30))
 mask = np.zeros_like(corr, dtype=bool)
 mask[np.triu_indices_from(mask)] = True
 corr[mask] = np.nan
-(corr 
- .style
- .background_gradient(cmap='BrBG_r', axis=None, vmin=-1, vmax=1)
- .highlight_null(null_color='#FFFFFF')  # Color NaNs white
- .set_precision(2))
 
-plt.matshow(corr)
-plt.xticks(r-1, attributeNames, fontsize=8, rotation=45)
-plt.yticks(r-1, attributeNames,fontsize=8, rotation=45)
-cb = plt.colorbar()
-cb.ax.tick_params(labelsize=6)
-plt.title('Correlation Matrix', fontsize=12);
-
-#Dette plot virker fint
-z = plt.figure(figsize=(19, 15))
-plt.matshow(df.corr(), fignum=z.number)
-#plt.xticks(range(df.select_dtypes(['number']).shape[1]), attributeNames.object, fontsize=16, rotation=45)
-plt.xticks(r-1, attributeNames, fontsize=20, rotation=45)
-#plt.yticks(range(df.select_dtypes(['number']).shape[1]), df.select_dtypes(['number']).columns, fontsize=14)
-plt.yticks(r-1, attributeNames,fontsize=20, rotation=45)
-cb = plt.colorbar()
+f = plt.figure(figsize=(19, 15))
+plt.matshow(corr, fignum=f.number, cmap='PiYG', vmin=-1, vmax=1)
+for (y, x), value in np.ndenumerate(corr):
+    if not np.isnan(value):
+        plt.text(x, y, f"{value:.2f}", va="center", ha="center", fontsize=20)
+plt.xticks(r, attributeNames, fontsize=20, rotation=45)
+plt.yticks(r, attributeNames,fontsize=20, rotation=45)
+cb = plt.colorbar(format = '%.1f', ticks=np.arange(-1,1.1,0.2))
+cb.set_label(label='Correlation',size=20)
 cb.ax.tick_params(labelsize=20)
 plt.title('Correlation Matrix', fontsize=24);
-
-
+plt.show()
