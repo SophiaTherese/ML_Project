@@ -3,7 +3,7 @@
 """
 Created on Fri Feb 18 13:34:08 2022
 
-@author: Sophia
+@author: Sophia Wesche s173828, Simone Engelbrecht s174276, Aidana Nursultanova s212994
 """
 
 from load_data import *

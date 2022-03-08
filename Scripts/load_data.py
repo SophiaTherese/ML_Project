@@ -3,7 +3,7 @@
 """
 Created on Tue Feb  1 16:35:11 2022
 
-@author: Sophia
+@author: Sophia Wesche s173828, Simone Engelbrecht s174276, Aidana Nursultanova s212994
 """
 
 # From exercise 1.5.1

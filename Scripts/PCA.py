@@ -3,7 +3,7 @@
 """
 Created on Tue Feb  8 16:53:32 2022
 
-@author: Sophia
+@author: Sophia Wesche s173828, Simone Engelbrecht s174276, Aidana Nursultanova s212994
 """
 from load_data import *
 
@@ -67,13 +67,15 @@ plt.show()
 
 
 # Plot PCA component coefficients
+f = plt.figure(figsize=(15, 5))
 pcs = [0,1,2,3,4]
 legendStrs = ['PC'+str(e+1) for e in pcs]
+
 bw = .2
 r = np.arange(0,M)
 for i in pcs:    
-    plt.bar(r+i*bw, V[:,i], width=bw)
-plt.xticks(r+bw, attributeNames)
+    plt.bar(r+i*bw, V[:,i], width=0.2)
+plt.xticks(r-0.1, attributeNames)
 plt.xlabel('Attributes')
 plt.ylabel('Component coefficients')
 plt.legend(legendStrs)
