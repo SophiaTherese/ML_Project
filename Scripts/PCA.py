@@ -67,7 +67,7 @@ plt.show()
 
 
 # Plot PCA component coefficients
-pcs = [0,1,2,3]
+pcs = [0,1,2,3,4]
 legendStrs = ['PC'+str(e+1) for e in pcs]
 bw = .2
 r = np.arange(0,M)
