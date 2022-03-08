@@ -37,7 +37,8 @@ attributeNames = attributeNames_all.tolist()[1:-1]
 print(df[attributeNames].describe().transpose())
 
 # Store the class indices present in the dataset, manually add labels
-y = raw_data[:,-1] # -1 takes the last column
+y = raw_data[:,-1].astype(int) # -1 takes the last column
+
 classNames = np.unique(y)
 classLabels = ['building_windows_float_processed',
                'building_windows_non_float_processed',

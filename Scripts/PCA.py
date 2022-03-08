@@ -53,14 +53,14 @@ plt.figure()
 plt.set_cmap('Greens')
 plt.rcParams['image.cmap']='jet'
 
-plt.title('NanoNose data: PCA')
+plt.title('Glass data projected onto first two principal components')
 
 colors = ['C0', 'C1', 'C2', 'C3', 'C4', 'C9']
 for c in range(C):
     # select indices belonging to class c:
-    class_mask = y==c
+    class_mask = y==classNames[c]
     plt.plot(Z[class_mask,i], Z[class_mask,j], 'o', color=colors[c], alpha=.5)
-plt.legend(classNames)
+plt.legend(classNames, title="Glass type")
 plt.xlabel('PC{0}'.format(i+1))
 plt.ylabel('PC{0}'.format(j+1))
 plt.show()
@@ -80,29 +80,3 @@ plt.legend(legendStrs)
 plt.grid()
 plt.title('PCA Component Coefficients')
 plt.show()
-
-
-# Inspecting the plot, we see that the 2nd principal component has large
-# (in magnitude) coefficients for attributes A, E and H. We can confirm
-# this by looking at it's numerical values directly, too:
-print('PC3:')
-print(V[:,2].T)
-
-# How does this translate to the actual data and its projections?
-# Looking at the data for water:
-
-# Projection of water class onto the 2nd principal component.
-#all_water_data = Y[y==4,:]
-
-#print('First water observation')
-#print(all_water_data[0,:])
-
-# Based on the coefficients and the attribute values for the observation
-# displayed, would you expect the projection onto PC2 to be positive or
-# negative - why? Consider *both* the magnitude and sign of *both* the
-# coefficient and the attribute!
-
-# You can determine the projection by (remove comments):
-#print('...and its projection onto PC2')
-#print(all_water_data[0,:]@V[:,1])
-# Try to explain why?
