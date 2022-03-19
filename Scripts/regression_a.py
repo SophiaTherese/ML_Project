@@ -11,8 +11,8 @@ from load_data import *
 from scipy.linalg import svd
 import sklearn.linear_model as lm
 import matplotlib.pyplot as plt
-
-
+from sklearn import model_selection
+from sklearn import metrics as mt
 
 
 # trying to one-out-of-K code it - but not successfully 
@@ -34,40 +34,41 @@ mean = Y.mean(0).round(8)+0.0
 std = np.std(Y,0)
 print('Mean:', mean, '- std:', std)
 
-
+#%%
 ## Crossvalidation
 # Create crossvalidation partition for evaluation
 #K = 10
 #CV = model_selection.KFold(n_splits=K,shuffle=True)
 
-
-
-cols = range(1, 9) 
-X_reg = X[:, cols]
-y_reg = X[:,0] # -1 takes the last column
-
+test_proportion = 0.1
+cols = range(1, 9)
+x = Y[:,cols]
+y = Y[:,0]
+#%%
+X_train, X_test, y_train, y_test = model_selection.train_test_split(x,y.reshape(-1,1),test_size=test_proportion)
 
 # Fit ordinary least squares regression model
 model = lm.LinearRegression(fit_intercept=True)
-model = model.fit(X[:, 6],y_reg)
+model = model.fit(X_train,y_train)
 # Compute model output:
-y_est = model.predict(X[:, 6])
+y_est = model.predict(X_test)
 # Or equivalently:
 #y_est = model.intercept_ + X @ model.coef_
 #w0_est = model.intercept_
 #w1_est = model.model.coef_
 
 # Plot original data and the model output
-attr = 5
 
-
+r2 = mt.r2_score(y_test, y_est)
+print(r2)
+#%%
 f = plt.figure()
 
 
-plt.plot(X[:, 6],y_reg,'.')
+plt.plot(X_train,y_train,'.')
 #plot(X,y_true,'-')
-plt.plot(X[:, 6],y_est,'-')
-plt.xlabel(attributeNames[6]); plt.ylabel('y')
+plt.plot(X_reg,y_est,'-')
+plt.xlabel(attributeNames[1]); plt.ylabel('y')
 plt.legend(['Training data', 'Regression fit (model)'])
 
 plt.show()
