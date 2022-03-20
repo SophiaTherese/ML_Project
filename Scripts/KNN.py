@@ -57,6 +57,7 @@ yhat[:,0] # predictions made by first classifier.
 # Compute accuracy here.
 
 
+#accuracy of each mpdel is claculated: 
 M_1 = sum(yhat[:,0] == y_true)/len(y_true)
 M_2 = sum(yhat[:,1] == y_true)/len(y_true)
 M_3 = sum(yhat[:,2] == y_true)/len(y_true)
