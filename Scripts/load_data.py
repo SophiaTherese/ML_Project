@@ -39,6 +39,7 @@ print(df[attributeNames].describe().transpose())
 # Store the class indices present in the dataset, manually add labels
 y = raw_data[:,-1].astype(int) # -1 takes the last column
 
+
 classNames = np.unique(y)
 classLabels = ['building_windows_float_processed',
                'building_windows_non_float_processed',
@@ -46,6 +47,7 @@ classLabels = ['building_windows_float_processed',
                'containers',
                'tableware',
                'headlamps']
+
 
 
 # We can determine the number of data objects and number of attributes using 
