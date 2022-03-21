@@ -18,7 +18,7 @@ filename = '../Data/glass.data'
 attributeNames_all = np.array(['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe', 'Type of glass'])
 df = pd.read_csv(filename, names=attributeNames_all)
 
-print("Missing values:", df.isnull().values.any())
+#print("Missing values:", df.isnull().values.any())
 
 # Pandas returns a dataframe (df), which we will convert to numpy arrays for this project.
 raw_data = df.values  
@@ -34,7 +34,7 @@ cols = range(1, 10)
 X = raw_data[:, cols]
 attributeNames = attributeNames_all.tolist()[1:-1]
 # A closer look at the attributes:
-print(df[attributeNames].describe().transpose())
+#print(df[attributeNames].describe().transpose())
 
 # Store the class indices present in the dataset, manually add labels
 y = raw_data[:,-1].astype(int) # -1 takes the last column

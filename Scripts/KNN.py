@@ -29,7 +29,7 @@ i=0
 yhat = []
 y_true = []
 for train_index, test_index in CV.split(X, y):
-    print('Crossvalidation fold: {0}/{1}'.format(i+1,N))    
+    #print('Crossvalidation fold: {0}/{1}'.format(i+1,N))    
     
     # extract training and test set for current CV fold
     X_train = X[train_index,:]
@@ -62,12 +62,9 @@ M_1 = sum(yhat[:,0] == y_true)/len(y_true)
 M_2 = sum(yhat[:,1] == y_true)/len(y_true)
 M_3 = sum(yhat[:,2] == y_true)/len(y_true)
 
-print('M_1=')
-print(M_1)
-print('M_2=')
-print(M_2)
-print('M_3=')
-print(M_3)
+print('M_1 =', M_1)
+print('M_2 =', M_2)
+print('M_3 =', M_3)
 
 
 #Jeffrey inteval for K = 1 in KNN. 

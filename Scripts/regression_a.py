@@ -53,35 +53,59 @@ lambdas = np.power(10.,np.arange(-3,2, step=0.1))
 
 # 10-fold cross validation
 K = 10
-CV = model_selection.KFold(K, shuffle=True)
 
-Error_train = np.empty((K,lambdas.size))
-Error_test = np.empty((K,lambdas.size))
-
-for i in range(lambdas.size):
-    k=0
-    for train_index, test_index in CV.split(X_reg,y_reg):
-        # extract training and test set for current CV fold
-        X_train = X_reg[train_index,:]
-        y_train = y_reg[train_index]
-        X_test = X_reg[test_index,:]
-        y_test = y_reg[test_index]
-        
-        # Compute squared error
-        m = lm.LinearRegression(fit_intercept=True).fit(X_train, y_train)
-        Error_train[k, i] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
-        Error_test[k, i] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
+opt_lambda_err, opt_lambda, _, train_err, test_err = rlr_validate(X_reg, y_reg, lambdas, cvf=K)
 
 
-opt_lambda = 10
-plt.plot(lambdas, np.ndarray.mean(Error_train,0), '-o', label='Training error')
-plt.plot(lambdas, np.ndarray.mean(Error_test,0), '-o', label='Validation error')
+plt.plot(lambdas, train_err, '-o', label='Training error')
+plt.plot(lambdas, test_err, '-o', label='Validation error')
 plt.axvline(x=opt_lambda, ls='--', lw=2, color='y', label='Optimal lambda')
 plt.xscale('log')
 plt.xlabel('Regularization factor')
 plt.ylabel('Mean squared error of cross-validation')
 plt.legend(loc='upper left')
 plt.title('Optimal lambda: ' + str(opt_lambda))
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+# CV = model_selection.KFold(K, shuffle=True)
+
+# Error_train = np.empty((K,lambdas.size))
+# Error_test = np.empty((K,lambdas.size))
+
+# for i in range(lambdas.size):
+#     k=0
+#     for train_index, test_index in CV.split(X_reg,y_reg):
+#         # extract training and test set for current CV fold
+#         X_train = X_reg[train_index,:]
+#         y_train = y_reg[train_index]
+#         X_test = X_reg[test_index,:]
+#         y_test = y_reg[test_index]
+        
+#         # Compute squared error
+#         m = lm.LinearRegression(fit_intercept=True).fit(X_train, y_train)
+#         Error_train[k, i] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
+#         Error_test[k, i] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
+
+
+# opt_lambda = 10
+# plt.plot(lambdas, np.ndarray.mean(Error_train,0), '-o', label='Training error')
+# plt.plot(lambdas, np.ndarray.mean(Error_test,0), '-o', label='Validation error')
+# plt.axvline(x=opt_lambda, ls='--', lw=2, color='y', label='Optimal lambda')
+# plt.xscale('log')
+# plt.xlabel('Regularization factor')
+# plt.ylabel('Mean squared error of cross-validation')
+# plt.legend(loc='upper left')
+# plt.title('Optimal lambda: ' + str(opt_lambda))
 
         
     
