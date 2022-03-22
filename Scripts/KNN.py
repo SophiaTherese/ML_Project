@@ -20,7 +20,7 @@ from load_data import *
 
 
 # Maximum number of neighbors
-L=[1, 5, 10]
+L=[1, 20,200]
 
 CV = model_selection.LeaveOneOut()
 i=0
@@ -67,8 +67,9 @@ print('M_2 =', M_2)
 print('M_3 =', M_3)
 
 
-#Jeffrey inteval for K = 1 in KNN. 
-alpha = 0.05
-[thetahatA, CIA] = jeffrey_interval(y_true, yhat[:,0], alpha=alpha)
 
-print("Theta point estimate", thetahatA, " CI: ", CIA)
+#Jeffrey inteval for K = 1 in KNN. 
+#alpha = 0.05
+#[thetahatA, CIA] = jeffrey_interval(y_true, yhat[:,0], alpha=alpha)
+
+#print("Theta point estimate", thetahatA, " CI: ", CIA)

@@ -30,6 +30,7 @@ glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
 glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
 X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1) 
 
+#%%
 
 #Featuretransformation to make mean = 0 and std = 1
 # Subtract mean value from data
@@ -42,7 +43,7 @@ X_reg = X_reg*(1/np.std(X_reg,0))
 #print('Mean:', mean, '- std:', std)
 
 # Extract RI as new y
-cols = range(1, 9)
+cols = range(1, 14)
 y_reg = X_reg[:,0]
 X_reg = X_reg[:,cols]
 
@@ -54,7 +55,7 @@ lambdas = np.power(10.,np.arange(-3,2, step=0.1))
 # 10-fold cross validation
 K = 10
 
-opt_lambda_err, opt_lambda, _, train_err, test_err = rlr_validate(X_reg, y_reg, lambdas, cvf=K)
+opt_lambda_err, opt_lambda, weights, train_err, test_err = rlr_validate(X_reg, y_reg, lambdas, cvf=K)
 
 
 plt.plot(lambdas, train_err, '-o', label='Training error')
