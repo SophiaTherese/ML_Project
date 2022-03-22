@@ -9,14 +9,10 @@ Created on Tue Mar  8 16:20:39 2022
 from load_data import *
 
 from scipy.linalg import svd
-import sklearn.linear_model as lm
 import matplotlib.pyplot as plt
-from sklearn import model_selection
 from sklearn import metrics as mt
-
 from matplotlib.pylab import (figure, semilogx, loglog, xlabel, ylabel, legend, 
                            title, subplot, show, grid)
-import numpy as np
 from scipy.io import loadmat
 import sklearn.linear_model as lm
 from sklearn import model_selection
@@ -229,17 +225,17 @@ plt.show()
 #     w_rlr[:,k] = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
 #     # Compute mean squared error with regularization with optimal lambda
 #     Error_train_rlr[k] = np.square(y_train-X_train @ w_rlr[:,k]).sum(axis=0)/y_train.shape[0]
-#     Error_test_rlr[k] = np.square(y_test-X_test @ w_rlr[:,k]).sum(axis=0)/y_test.shape[0]
+    # Error_test_rlr[k] = np.square(y_test-X_test @ w_rlr[:,k]).sum(axis=0)/y_test.shape[0]
 
-#     # Estimate weights for unregularized linear regression, on entire training set
-#     w_noreg[:,k] = np.linalg.solve(XtX,Xty).squeeze()
-#     # Compute mean squared error without regularization
-#     Error_train[k] = np.square(y_train-X_train @ w_noreg[:,k]).sum(axis=0)/y_train.shape[0]
-#     Error_test[k] = np.square(y_test-X_test @ w_noreg[:,k]).sum(axis=0)/y_test.shape[0]
-#     # OR ALTERNATIVELY: you can use sklearn.linear_model module for linear regression:
-#     #m = lm.LinearRegression().fit(X_train, y_train)
-#     #Error_train[k] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
-#     #Error_test[k] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
+    # # Estimate weights for unregularized linear regression, on entire training set
+    # w_noreg[:,k] = np.linalg.solve(XtX,Xty).squeeze()
+    # # Compute mean squared error without regularization
+    # Error_train[k] = np.square(y_train-X_train @ w_noreg[:,k]).sum(axis=0)/y_train.shape[0]
+    # Error_test[k] = np.square(y_test-X_test @ w_noreg[:,k]).sum(axis=0)/y_test.shape[0]
+    # # OR ALTERNATIVELY: you can use sklearn.linear_model module for linear regression:
+    # #m = lm.LinearRegression().fit(X_train, y_train)
+    # #Error_train[k] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
+    # #Error_test[k] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
 
 #     # Display the results for the last cross-validation fold
 #     if k == K-1:
