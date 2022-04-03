@@ -61,5 +61,32 @@ C = len(classNames)
 
 
 
+# Extract RI as new y
+cols = range(1, 9)
+y_reg = X[:,0]
+X_reg = X[:,cols]
+
+#Featuretransformation to make mean = 0 and std = 1
+# Subtract mean value from data
+# X_reg = X_reg - np.ones((X_reg.shape[0],1))*X_reg.mean(0)
+# #To standardize, we dividing by the standard deviation
+# X_reg = X_reg*(1/np.std(X_reg,0))
+#np.set_printoptions(precision=2, suppress=True)
+#mean = Y.mean(0).round(8)+0.0
+#std = np.std(Y,0)
+#print('Mean:', mean, '- std:', std)
+
+
+# one-out-of-K encode for regression
+glass_type = y.T
+glass_type_encoding = np.zeros((glass_type.size, C+2))
+glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
+glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
+X_reg = np.concatenate( (X_reg[:, :-1], glass_type_encoding), axis=1) 
+
+
+
+N_reg, M_reg = X_reg.shape
+
 
 
