@@ -57,6 +57,7 @@ K = 10
 
 opt_lambda_err, opt_lambda, weights, train_err, test_err = rlr_validate(X_reg, y_reg, lambdas, cvf=K)
 
+print(weights.shape)
 
 plt.plot(lambdas, train_err, '-o', label='Training error')
 plt.plot(lambdas, test_err, '-o', label='Validation error')
