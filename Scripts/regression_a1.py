@@ -279,12 +279,14 @@ for train_index, test_index in CV.split(X,y):
     #     grid()
     print(opt_lambda)
         # Display the results for the last cross-validation fold
-    
+    from matplotlib.ticker import StrMethodFormatter
+
     if k == K-1:
         figure(k, figsize=(12, 6))
         plt.plot(lambdas, train_err_vs_lambda.T, '-*', lw=1,label='Training error',color='m')
         plt.plot(lambdas, test_err_vs_lambda.T, '-*', lw=1,label='Validation error',color='pink')
         plt.axvline(x=opt_lambda, ls='--', lw=1, color='r', label='Optimal lambda')
+        plt.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.1e}'))
         plt.xscale('log')
         plt.xlabel('Regularization factor')
         plt.ylabel('Mean squared error of cross-validation')
