@@ -30,7 +30,14 @@ glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
 glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
 X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1) 
 
+
 #%%
+
+# Extract RI as new y
+cols = range(1, 14)
+y_reg = X_reg[:,0]
+X_reg = X_reg[:,cols]
+N_reg, M_reg = X_reg.shape
 
 
 #Featuretransformation to make mean = 0 and std = 1
@@ -44,11 +51,10 @@ X_reg = X_reg*(1/np.std(X_reg,0))
 #print('Mean:', mean, '- std:', std)
 
 
-# Extract RI as new y
-cols = range(1, 14)
-y_reg = X_reg[:,0]
-X_reg = X_reg[:,cols]
-N_reg, M_reg = X_reg.shape
+
+
+
+
 
 
 # # ------------------------ REGULARIZATION PARAMETER -------------------------------
@@ -274,15 +280,15 @@ for train_index, test_index in CV.split(X,y):
         # Display the results for the last cross-validation fold
     if k == K-1:
         figure(k, figsize=(12, 8))
-        subplot(1, 2, 1)
-            # Don't plot the bias term
-        semilogx(lambdas, mean_w_vs_lambda.T[:, 1:], '.-')
-        xlabel('Regularization factor')
-        ylabel('Mean Coefficient Values')
-        grid()
-            # You can choose to display the legend, but it's omitted for a cleaner
-            # plot, since there are many attributes
-            #legend(attributeNames[1:], loc='best')
+        # subplot(1, 2, 1)
+        #     # Don't plot the bias term
+        # semilogx(lambdas, mean_w_vs_lambda.T[:, 1:], '.-')
+        # xlabel('Regularization factor')
+        # ylabel('Mean Coefficient Values')
+        # grid()
+        #     # You can choose to display the legend, but it's omitted for a cleaner
+        #     # plot, since there are many attributes
+        #     #legend(attributeNames[1:], loc='best')
 
         subplot(1, 2, 2)
         plt.axvline(x=opt_lambda, ls='--',

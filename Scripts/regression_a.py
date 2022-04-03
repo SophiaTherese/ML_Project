@@ -9,19 +9,16 @@ Created on Tue Mar  8 16:20:39 2022
 from load_data import *
 
 from scipy.linalg import svd
-import sklearn.linear_model as lm
 import matplotlib.pyplot as plt
-from sklearn import model_selection
 from sklearn import metrics as mt
-
 from matplotlib.pylab import (figure, semilogx, loglog, xlabel, ylabel, legend, 
                            title, subplot, show, grid)
-import numpy as np
 from scipy.io import loadmat
 import sklearn.linear_model as lm
 from sklearn import model_selection
 from toolbox_02450 import rlr_validate
 
+<<<<<<< HEAD
 
 # one-out-of-K encode
 glass_type = y.T
@@ -51,6 +48,8 @@ X_reg = X_reg[:,cols]
 N_reg, M_reg = X_reg.shape
 
 
+=======
+>>>>>>> cbfcb17e07f4de0084d5d87aa8a4f85e533958a6
 # ------------------------ REGULARIZATION PARAMETER -------------------------------
 
 lambdas = np.concatenate(([0],np.power(10.,np.arange(-3,2, step=0.1))))
@@ -59,9 +58,13 @@ lambdas = np.concatenate(([0],np.power(10.,np.arange(-3,2, step=0.1))))
 K = 10
 
 opt_lambda_err, opt_lambda, weights, train_err, test_err = rlr_validate(X_reg, y_reg, lambdas, cvf=K)
+<<<<<<< HEAD
 
 print(weights.shape)
 #figure(k, figsize=(12, 8))
+=======
+print(opt_lambda_err)
+>>>>>>> cbfcb17e07f4de0084d5d87aa8a4f85e533958a6
 plt.plot(lambdas, train_err, '-o', label='Training error')
 plt.plot(lambdas, test_err, '-o', label='Validation error')
 plt.axvline(x=opt_lambda, ls='--', lw=2, color='y', label='Optimal lambda')
@@ -73,6 +76,7 @@ plt.title('Optimal lambda: %.2f' % opt_lambda)
 plt.show()
 
 
+<<<<<<< HEAD
 
 
 Xty = X_reg.T @ y_reg
@@ -88,6 +92,8 @@ w_rlr = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
 
 
 
+=======
+>>>>>>> cbfcb17e07f4de0084d5d87aa8a4f85e533958a6
 # CV = model_selection.KFold(K, shuffle=True)
 
 # Error_train = np.empty((K,lambdas.size))
@@ -239,17 +245,17 @@ w_rlr = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
 #     w_rlr[:,k] = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
 #     # Compute mean squared error with regularization with optimal lambda
 #     Error_train_rlr[k] = np.square(y_train-X_train @ w_rlr[:,k]).sum(axis=0)/y_train.shape[0]
-#     Error_test_rlr[k] = np.square(y_test-X_test @ w_rlr[:,k]).sum(axis=0)/y_test.shape[0]
+    # Error_test_rlr[k] = np.square(y_test-X_test @ w_rlr[:,k]).sum(axis=0)/y_test.shape[0]
 
-#     # Estimate weights for unregularized linear regression, on entire training set
-#     w_noreg[:,k] = np.linalg.solve(XtX,Xty).squeeze()
-#     # Compute mean squared error without regularization
-#     Error_train[k] = np.square(y_train-X_train @ w_noreg[:,k]).sum(axis=0)/y_train.shape[0]
-#     Error_test[k] = np.square(y_test-X_test @ w_noreg[:,k]).sum(axis=0)/y_test.shape[0]
-#     # OR ALTERNATIVELY: you can use sklearn.linear_model module for linear regression:
-#     #m = lm.LinearRegression().fit(X_train, y_train)
-#     #Error_train[k] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
-#     #Error_test[k] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
+    # # Estimate weights for unregularized linear regression, on entire training set
+    # w_noreg[:,k] = np.linalg.solve(XtX,Xty).squeeze()
+    # # Compute mean squared error without regularization
+    # Error_train[k] = np.square(y_train-X_train @ w_noreg[:,k]).sum(axis=0)/y_train.shape[0]
+    # Error_test[k] = np.square(y_test-X_test @ w_noreg[:,k]).sum(axis=0)/y_test.shape[0]
+    # # OR ALTERNATIVELY: you can use sklearn.linear_model module for linear regression:
+    # #m = lm.LinearRegression().fit(X_train, y_train)
+    # #Error_train[k] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
+    # #Error_test[k] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
 
 #     # Display the results for the last cross-validation fold
 #     if k == K-1:
