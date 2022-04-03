@@ -23,32 +23,33 @@ from sklearn import model_selection
 from toolbox_02450 import rlr_validate
 
 
-# one-out-of-K encode
-glass_type = y.T
-glass_type_encoding = np.zeros((glass_type.size, C+2))
-glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
-glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
-X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1) 
+    
+# # one-out-of-K encode
+# glass_type = y.T
+# glass_type_encoding = np.zeros((glass_type.size, C+2))
+# glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
+# glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
+# X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1) 
 
 
 #%%
 
-# Extract RI as new y
-cols = range(1, 14)
-y_reg = X_reg[:,0]
-X_reg = X_reg[:,cols]
-N_reg, M_reg = X_reg.shape
+# # Extract RI as new y
+# cols = range(1, 14)
+# y_reg = X_reg[:,0]
+# X_reg = X_reg[:,cols]
+# N_reg, M_reg = X_reg.shape
 
 
-#Featuretransformation to make mean = 0 and std = 1
-# Subtract mean value from data
-X_reg = X_reg - np.ones((X.shape[0],1))*X_reg.mean(0)
-#To standardize, we dividing by the standard deviation
-X_reg = X_reg*(1/np.std(X_reg,0))
-#np.set_printoptions(precision=2, suppress=True)
-#mean = Y.mean(0).round(8)+0.0
-#std = np.std(Y,0)
-#print('Mean:', mean, '- std:', std)
+# #Featuretransformation to make mean = 0 and std = 1
+# # Subtract mean value from data
+# X_reg = X_reg - np.ones((X.shape[0],1))*X_reg.mean(0)
+# #To standardize, we dividing by the standard deviation
+# X_reg = X_reg*(1/np.std(X_reg,0))
+# #np.set_printoptions(precision=2, suppress=True)
+# #mean = Y.mean(0).round(8)+0.0
+# #std = np.std(Y,0)
+# #print('Mean:', mean, '- std:', std)
 
 
 
@@ -195,7 +196,7 @@ CV = model_selection.KFold(K, shuffle=True)
 #CV = model_selection.KFold(K, shuffle=False)
 
 # Values of lambda
-lambdas = np.concatenate(([0],np.power(10.,np.arange(-3,2, step=0.1))))
+lambdas = np.power(10.,np.arange(-3,2, step=0.1))
 
 # Initialize variables
 #T = len(lambdas)
@@ -206,8 +207,8 @@ Error_test_rlr = np.empty((K,1))
 Error_train_nofeatures = np.empty((K,1))
 Error_test_nofeatures = np.empty((K,1))
 w_rlr = np.empty((M_reg,K))
-#mu = np.empty((K, M_reg-1))
-#sigma = np.empty((K, M_reg-1))
+mu = np.empty((K, M_reg-1))
+sigma = np.empty((K, M_reg-1))
 w_noreg = np.empty((M_reg,K))
 
 
@@ -226,11 +227,11 @@ for train_index, test_index in CV.split(X,y):
     # Standardize outer fold based on training set, and save the mean and standard
     # deviations since they're part of the model (they would be needed for
     # making new predictions) - for brevity we won't always store these in the scripts
-#    mu[k, :] = np.mean(X_train[:, 1:], 0)
-#    sigma[k, :] = np.std(X_train[:, 1:], 0)
+    mu[k, :] = np.mean(X_train[:, 1:], 0)
+    sigma[k, :] = np.std(X_train[:, 1:], 0)
     
-#    X_train[:, 1:] = (X_train[:, 1:] - mu[k, :] ) / sigma[k, :] 
-#    X_test[:, 1:] = (X_test[:, 1:] - mu[k, :] ) / sigma[k, :] 
+    X_train[:, 1:] = (X_train[:, 1:] - mu[k, :] ) / sigma[k, :] 
+    X_test[:, 1:] = (X_test[:, 1:] - mu[k, :] ) / sigma[k, :] 
     
     Xty = X_train.T @ y_train
     XtX = X_train.T @ X_train
@@ -278,29 +279,18 @@ for train_index, test_index in CV.split(X,y):
     #     grid()
     print(opt_lambda)
         # Display the results for the last cross-validation fold
+    
     if k == K-1:
-        figure(k, figsize=(12, 8))
-        # subplot(1, 2, 1)
-        #     # Don't plot the bias term
-        # semilogx(lambdas, mean_w_vs_lambda.T[:, 1:], '.-')
-        # xlabel('Regularization factor')
-        # ylabel('Mean Coefficient Values')
-        # grid()
-        #     # You can choose to display the legend, but it's omitted for a cleaner
-        #     # plot, since there are many attributes
-        #     #legend(attributeNames[1:], loc='best')
-
-        subplot(1, 2, 2)
-        plt.axvline(x=opt_lambda, ls='--',
-                        color='orange', label=str(opt_lambda))
-        #title('Optimal lambda: 1e{0}'.format(np.log10(opt_lambda)))
+        plt.plot(lambdas, train_err_vs_lambda.T, '-o', label='Training error')
+        plt.plot(lambdas, test_err_vs_lambda.T, '-o', label='Validation error')
+        plt.axvline(x=opt_lambda, ls='--', lw=2, color='y', label='Optimal lambda')
+        plt.xscale('log')
+        plt.xlabel('Regularization factor')
+        plt.ylabel('Mean squared error of cross-validation')
+        plt.legend(loc='upper left')
         plt.title('Optimal lambda: %.2f' % opt_lambda)
-        loglog(lambdas, train_err_vs_lambda.T, 'b.-',
-               lambdas, test_err_vs_lambda.T, 'r.-')
-        xlabel('Regularization factor')
-        ylabel('Squared error (crossvalidation)')
-        legend(['Opt. lambda', 'Train error', 'Validation error'])
-        grid()
+        plt.show()
+
     
     # To inspect the used indices, use these print statements
     #print('Cross validation fold {0}/{1}:'.format(k+1,K))
@@ -324,7 +314,7 @@ print('- R^2 test:     {0}\n'.format((Error_test_nofeatures.sum()-Error_test_rlr
 
 print('Weights in last fold:')
 for m in range(M_reg):
-    print('{:>15} {:>15}'.format(attributeNames[m+1], np.round(w_rlr[m,-1],2)))
+    print('{:>15} {:>15}'.format(attributeNames_reg[m], np.round(w_rlr[m,-1],5)))
 
 print('Ran Exercise 8.1.1')
 

@@ -20,12 +20,12 @@ from toolbox_02450 import rlr_validate
 
 <<<<<<< HEAD
 
-# one-out-of-K encode
-glass_type = y.T
-glass_type_encoding = np.zeros((glass_type.size, C+2))
-glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
-glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
-X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1) 
+# # one-out-of-K encode
+# glass_type = y.T
+# glass_type_encoding = np.zeros((glass_type.size, C+2))
+# glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
+# glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
+# X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1) 
 
 #%%
 

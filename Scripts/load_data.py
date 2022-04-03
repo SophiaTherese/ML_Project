@@ -82,9 +82,14 @@ glass_type = y.T
 glass_type_encoding = np.zeros((glass_type.size, C+2))
 glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
 glass_type_encoding = np.delete(glass_type_encoding, [0, 4], 1)
-X_reg = np.concatenate( (X_reg[:, :-1], glass_type_encoding), axis=1) 
+X_reg = np.concatenate( (X_reg, glass_type_encoding), axis=1) 
+
+attributeNames_reg = np.concatenate((attributeNames[1:], classNames))
 
 
+# Add offset attribute
+X_reg = np.concatenate((np.ones((X_reg.shape[0], 1)), X_reg), 1)
+attributeNames_reg = np.concatenate((['Offset'], attributeNames_reg))
 
 N_reg, M_reg = X_reg.shape
 
