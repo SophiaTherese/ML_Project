@@ -32,6 +32,7 @@ X_reg = np.concatenate( (X[:, :-1], glass_type_encoding), axis=1)
 
 #%%
 
+
 #Featuretransformation to make mean = 0 and std = 1
 # Subtract mean value from data
 X_reg = X_reg - np.ones((X.shape[0],1))*X_reg.mean(0)
@@ -42,15 +43,17 @@ X_reg = X_reg*(1/np.std(X_reg,0))
 #std = np.std(Y,0)
 #print('Mean:', mean, '- std:', std)
 
+
 # Extract RI as new y
 cols = range(1, 14)
 y_reg = X_reg[:,0]
 X_reg = X_reg[:,cols]
+N_reg, M_reg = X_reg.shape
 
 
 # ------------------------ REGULARIZATION PARAMETER -------------------------------
 
-lambdas = np.power(10.,np.arange(-3,2, step=0.1))
+lambdas = np.concatenate(([0],np.power(10.,np.arange(-3,2, step=0.1))))
 
 # 10-fold cross validation
 K = 10
@@ -58,7 +61,7 @@ K = 10
 opt_lambda_err, opt_lambda, weights, train_err, test_err = rlr_validate(X_reg, y_reg, lambdas, cvf=K)
 
 print(weights.shape)
-
+#figure(k, figsize=(12, 8))
 plt.plot(lambdas, train_err, '-o', label='Training error')
 plt.plot(lambdas, test_err, '-o', label='Validation error')
 plt.axvline(x=opt_lambda, ls='--', lw=2, color='y', label='Optimal lambda')
@@ -66,13 +69,19 @@ plt.xscale('log')
 plt.xlabel('Regularization factor')
 plt.ylabel('Mean squared error of cross-validation')
 plt.legend(loc='upper left')
-plt.title('Optimal lambda: ' + str(opt_lambda))
+plt.title('Optimal lambda: %.2f' % opt_lambda)
 plt.show()
 
 
 
 
+Xty = X_reg.T @ y_reg
+XtX = X_reg.T @ X_reg
 
+# Estimate weights for the optimal value of lambda, on entire training set
+lambdaI = opt_lambda * np.eye(M_reg)
+lambdaI[0,0] = 0 # Do no regularize the bias term
+w_rlr = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
 
 
 
