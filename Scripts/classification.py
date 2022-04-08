@@ -1,101 +1,139 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Feb  8 16:02:44 2022
-
-@author: Sophia
-"""
-
-## exercise 1.5.4
-# Start by running the exercise 1.5.3 to load the Iris data in
-# "classification format":
 from load_data import *
 
-import matplotlib.pyplot as plt
+from imblearn.over_sampling import SMOTE
+import scipy.stats as st
+from sklearn import model_selection
+import sklearn.linear_model as lm
+from sklearn.neighbors import KNeighborsClassifier
 
-## Classification problem
-# The current variables X and y represent a classification problem, in
-# which a machine learning model will use the sepal and petal dimesions
-# (stored in the matrix X) to predict the class (species of Iris, stored in
-# the variable y). A relevant figure for this classification problem could
-# for instance be one that shows how the classes are distributed based on
-# two attributes in matrix X:
-X_c = X.copy();
-y_c = y.copy();
-attributeNames_c = attributeNames.copy();
-i = 1; j = 8;
-color = ['r','g', 'b', 'y', 'c','m']
-plt.title('Glass classification problem')
-for c in range(len(classNames)):
-    idx = y_c == c
-    plt.scatter(x=X_c[idx, i],
-                y=X_c[idx, j], 
-                c=color[c], 
-                s=50, alpha=0.5,
-                label=classLabels[c])
-plt.legend()
-plt.xlabel(attributeNames_c[i])
-plt.ylabel(attributeNames_c[j])
-plt.show()
-# Consider, for instance, if it would be possible to make a single line in
-# the plot to delineate any two groups? Can you draw a line between
-# the Setosas and the Versicolors? The Versicolors and the Virginicas?
+# Initialize: lambdas, cross-validation parameters, L-values
+lambdas = np.power(10.,np.arange(-5,2, step=0.1))
+K1 = 10
+K2 = 10
+# Maximum number of neighbors
+L = range(1, 101)
 
-## Regression problem
-# Since the variable we wish to predict is petal length,
-# petal length cannot any longer be in the data matrix X.
-# The first thing we do is store all the information we have in the
-# other format in one data matrix:
-data = np.concatenate((X_c, np.expand_dims(y_c,axis=1)), axis=1)
-# We need to do expand_dims to y_c for the dimensions of X_c and y_c to fit.
+# transform (oversampling) the dataset (called X_OS and y_OS)
+oversample = SMOTE()
+X_os, y_os = oversample.fit_resample(X, y)
 
-# We know that the RI corresponds to the fiirst column in the data
-# matrix (see attributeNames), and therefore our new y variable is:
-y_r = data[:, 1]
+# RESULTS
+baseline = np.zeros((K1,1))
+log_reg = np.ndarray((K1,2))
+knn = np.ndarray((K1,2))
+knn.fill(np.finfo('float64').max)
 
-# Similarly, our new X matrix is all the other information but without the 
-# petal length (since it's now the y variable):
-X_r = data[:, [0, 2, 3, 4, 5, 6, 7, 8, 9, 10]]
+# Outer-layer CV
+CV_1 = model_selection.KFold(K1, shuffle=True)
+k_1 = 0
+for train_index, test_index in CV_1.split(X_os,y_os):
+    
+    X_train_1 = X_os[train_index,:]
+    y_train_1 = y_os[train_index]
+    X_test_1 = X_os[test_index,:]
+    y_test_1 = y_os[test_index]
 
-# Since the glass type information (which is now the last column in X_r) is a
-# categorical variable, we will do a one-out-of-K encoding of the variable:
-glass_type = np.array(X_r[:, -1], dtype=int).T
-K = glass_type.max() + 1
-glass_type_encoding = np.zeros((glass_type.size, K))
-glass_type_encoding[np.arange(glass_type.size), glass_type] = 1
-# The encoded information is now a 214x6 matrix. This corresponds to 150
-# observations, and 3 possible species. For each observation, the matrix
-# has a row, and each row has two 0s and a single 1. The placement of the 1
-# specifies which of the three Iris species the observations was.
+    # Inner-layer CV
+    CV_2 = model_selection.KFold(K2, shuffle=True)
+    
+    best_error_baseline = np.finfo('float64').max
+    best_error_log_reg = np.finfo('float64').max
+    best_error_knn = np.finfo('float64').max
+    for train_index, test_index in CV_2.split(X_train_1, y_train_1):
+        X_train_2 = X_train_1[train_index,:]
+        y_train_2 = y_train_1[train_index]
+        X_test_2 = X_train_1[test_index,:]
+        y_test_2 = y_train_1[test_index]
+        
+        #%% Model fitting and prediction
+        # Standardize data based on training set
+        mu = np.mean(X_train_2, 0)
+        sigma = np.std(X_train_2, 0)
+        X_train_2 = (X_train_2 - mu) / sigma
+        X_test_2 = (X_test_2 - mu) / sigma
 
-# We need to replace the last column in X (which was the not encoded
-# version of the species data) with the encoded version:
-X_r = np.concatenate( (X_r[:, :-1], glass_type_encoding), axis=1) 
+        
+        # Baseline
+        counts = np.bincount(y_train_2)
+        largest_class = np.argmax(counts)
+        error_baseline = np.sum(largest_class!=y_test_2) / len(y_test_2)
+        if error_baseline < best_error_baseline:
+            best_error_baseline = error_baseline
+            # save outer error
+            baseline[k_1] = np.sum(largest_class!=y_test_1) / len(y_test_1)
+        
+        
+        
+        # Logistic Regression
+        for l in lambdas:
+            mdl = lm.LogisticRegression(solver='lbfgs', multi_class='multinomial', 
+                                           tol=1e-4, random_state=1, 
+                                           penalty='l2', C=1/l)
+            mdl.fit(X_train_2,y_train_2)
+            
+            y_test_est_2 = mdl.predict(X_test_2)
+            test_error_rate_2 = np.sum(y_test_est_2!=y_test_2) / len(y_test_2)
+            
+            # store best error rate along with lambda
+            if test_error_rate_2 < best_error_log_reg:
+                best_error_log_reg = test_error_rate_2
+                
+                # Determine error for outer test set
+                y_test_est_1 = mdl.predict(X_test_1)
+                test_error_rate_1 = np.sum(y_test_est_1!=y_test_1) / len(y_test_1)
+                
+                log_reg[k_1] = (l, test_error_rate_1)
 
-# Now, X is of size 214x16 corresponding to the three measurements of the
-# Iris that are not the petal length as well as the three variables that
-# specifies whether or not a given observations is or isn't a certain type.
-# We need to update the attribute names and store the RI name 
-# as the name of the target variable for a regression:
-targetName_r = attributeNames_c[1]
-attributeNames_r = np.concatenate((attributeNames_c[[0, 2, 3, 4, 5, 6, 7, 8, 9, 10]], classNames), 
-                                  axis=0)
+        # KNN
+        for l in L:
+            knclassifier = KNeighborsClassifier(n_neighbors=l)
+            knclassifier.fit(X_train_2, y_train_2)
+            
+            y_test_est_2 = knclassifier.predict(X_test_2)
+            test_error_rate_2 = np.sum(y_test_est_2!=y_test_2) / len(y_test_2)
+            
+            # store best error rate along with lambda
+            if test_error_rate_2 < best_error_knn:
+                best_error_knn = test_error_rate_2
+                
+                # Determine error for outer test set
+                y_test_est_1 = knclassifier.predict(X_test_1)
+                test_error_rate_1 = np.sum(y_test_est_1!=y_test_1) / len(y_test_1)
+                
+                knn[k_1] = (l, test_error_rate_1)
 
-# Lastly, we update M, since we now have more attributes:
-N,M = X_r.shape
+    k_1+=1
 
-# A relevant figure for this regression problem could
-# for instance be one that shows how the target, that is the petal length,
-# changes with one of the predictors in X:
-i = 2  
-plt.title('Glass RI regression problem')
-plt.plot(X_r[:, i], y_r, 'o')
-plt.xlabel(attributeNames_r[i]);
-plt.ylabel(targetName_r);
-# Consider if you see a relationship between the predictor variable on the
-# x-axis (the variable from X) and the target variable on the y-axis (the
-# variable y). Could you draw a straight line through the data points for
-# any of the attributes (choose different i)? 
-# Note that, when i is 3, 4, or 5, the x-axis is based on a binary 
-# variable, in which case a scatter plot is not as such the best option for 
-# visulizing the information. 
+# Create table
+print("Baseline:")
+print(baseline)
+print("Logistic Regression:")
+print(log_reg)
+print("KNN:")
+print(knn)
+
+def setupI(zA, zB):
+    # Initialize parameters and run test appropriate for setup I
+    alpha = 0.05
+
+    z = zA - zB
+    p_setupI = 2 * st.t.cdf(-np.abs(np.mean(z)) / st.sem(z), df=len(z) - 1)  # p-value
+    CI_setupI = st.t.interval(1 - alpha, len(z) - 1, loc=np.mean(z), scale=st.sem(z))  # Confidence interval
+    print ("p-value:")
+    print(p_setupI)
+    print ("confidence interval")
+    print(CI_setupI)
+
+print("Setup I")
+print("Baseline / Logistic Regression")
+setupI(baseline.squeeze(1), log_reg[:,1])
+print("Baseline / KNN")
+setupI(baseline.squeeze(1), knn[:,1])
+print("KNN / Logistic Regression")
+setupI(knn[:,1], log_reg[:,1])
+
+
+
+
+

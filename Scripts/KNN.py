@@ -6,17 +6,13 @@ Created on Sun Mar 20 09:52:36 2022
 @author: Sophia
 """
 
-from matplotlib.pyplot import figure, plot, xlabel, ylabel, show
-from toolbox_02450 import jeffrey_interval
-import numpy as np
-from scipy.io import loadmat
+#from toolbox_02450 import jeffrey_interval
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import model_selection
 
-# requires data from exercise 1.5.1
 from load_data import *
 
-# This script crates predictions from three KNN classifiers using cross-validation
+# This script creates predictions from three KNN classifiers using cross-validation
 
 
 # Maximum number of neighbors
@@ -56,15 +52,17 @@ y_true = np.concatenate(y_true)
 yhat[:,0] # predictions made by first classifier.
 # Compute accuracy here.
 
+for l in range(len(L)):
+    #accuracy of each mpdel is calculated: 
+    print("M_{} =".format(l+1), sum(yhat[:,l] == y_true)/len(y_true))
 
-#accuracy of each mpdel is claculated: 
-M_1 = sum(yhat[:,0] == y_true)/len(y_true)
-M_2 = sum(yhat[:,1] == y_true)/len(y_true)
-M_3 = sum(yhat[:,2] == y_true)/len(y_true)
+# M_1 = sum(yhat[:,0] == y_true)/len(y_true)
+# M_2 = sum(yhat[:,1] == y_true)/len(y_true)
+# M_3 = sum(yhat[:,2] == y_true)/len(y_true)
 
-print('M_1 =', M_1)
-print('M_2 =', M_2)
-print('M_3 =', M_3)
+# print('M_1 =', M_1)
+# print('M_2 =', M_2)
+# print('M_3 =', M_3)
 
 
 
