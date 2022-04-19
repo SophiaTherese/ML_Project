@@ -14,7 +14,7 @@ lambdas = np.power(10.,np.arange(-3,2, step=0.1))
 K1 = 10
 K2 = 10
 # Parameters for neural network classifier
-h = range(1, 9)
+h = range(1, 11)
 
 # RESULTS
 ann = np.ndarray((K1,2))

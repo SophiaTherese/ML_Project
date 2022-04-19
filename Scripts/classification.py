@@ -8,7 +8,7 @@ import sklearn.linear_model as lm
 from sklearn.neighbors import KNeighborsClassifier
 
 # Initialize: lambdas, cross-validation parameters, L-values
-lambdas = np.power(10.,np.arange(-5,2, step=0.1))
+lambdas = np.power(10.,np.arange(-10,2, step=0.2))
 K1 = 10
 K2 = 10
 # Maximum number of neighbors
@@ -17,6 +17,12 @@ L = range(1, 101)
 # transform (oversampling) the dataset (called X_OS and y_OS)
 oversample = SMOTE()
 X_os, y_os = oversample.fit_resample(X, y)
+
+#Featuretransformation to make mean = 0 and std = 1
+# Subtract mean value from data
+X_os = X_os - np.ones((X_os.shape[0],1))*X_os.mean(0)
+# #To standardize, we dividing by the standard deviation
+X_os = X_os*(1/np.std(X_os,0))
 
 # RESULTS
 baseline = np.zeros((K1,1))
@@ -27,6 +33,8 @@ knn.fill(np.finfo('float64').max)
 # Outer-layer CV
 CV_1 = model_selection.KFold(K1, shuffle=True)
 k_1 = 0
+alltime_best_error_log_reg = np.finfo('float64').max
+alltime_best_log_reg = (0, np.ndarray((C,M)))
 for train_index, test_index in CV_1.split(X_os,y_os):
     
     X_train_1 = X_os[train_index,:]
@@ -55,21 +63,28 @@ for train_index, test_index in CV_1.split(X_os,y_os):
 
         
         # Baseline
-        counts = np.bincount(y_train_2)
-        largest_class = np.argmax(counts)
-        error_baseline = np.sum(largest_class!=y_test_2) / len(y_test_2)
-        if error_baseline < best_error_baseline:
-            best_error_baseline = error_baseline
+        mdl = lm.LogisticRegression(solver='lbfgs', multi_class='multinomial', 
+                                       tol=1e-4, random_state=1, 
+                                       penalty='l2')
+        mdl.fit(X_train_2,y_train_2)
+        
+        y_test_est_2 = mdl.predict(X_test_2)
+        test_error_rate_2 = np.sum(y_test_est_2!=y_test_2) / len(y_test_2)
+        
+        # store best error rate
+        if test_error_rate_2 < best_error_baseline:
+            best_error_baseline = test_error_rate_2
             # save outer error
-            baseline[k_1] = np.sum(largest_class!=y_test_1) / len(y_test_1)
+            y_test_est_1 = mdl.predict(X_test_1)
+            test_error_rate_1 = np.sum(y_test_est_1!=y_test_1) / len(y_test_1)
+            baseline[k_1] = test_error_rate_1
         
-        
-        
+
         # Logistic Regression
         for l in lambdas:
             mdl = lm.LogisticRegression(solver='lbfgs', multi_class='multinomial', 
                                            tol=1e-4, random_state=1, 
-                                           penalty='l2', C=1/l)
+                                           penalty='l2', C=1/l, max_iter=3000)
             mdl.fit(X_train_2,y_train_2)
             
             y_test_est_2 = mdl.predict(X_test_2)
@@ -84,6 +99,10 @@ for train_index, test_index in CV_1.split(X_os,y_os):
                 test_error_rate_1 = np.sum(y_test_est_1!=y_test_1) / len(y_test_1)
                 
                 log_reg[k_1] = (l, test_error_rate_1)
+                
+                if test_error_rate_1 < alltime_best_error_log_reg:
+                    alltime_best_error_log_reg = test_error_rate_1
+                    alltime_best_log_reg = (l, mdl.coef_)
 
         # KNN
         for l in L:
@@ -133,7 +152,7 @@ setupI(baseline.squeeze(1), knn[:,1])
 print("KNN / Logistic Regression")
 setupI(knn[:,1], log_reg[:,1])
 
-
-
-
-
+print("Prediction of logistic regression model")
+print("Value of lambda:", alltime_best_log_reg[0])
+print("Weights:")
+print(alltime_best_log_reg[1])
