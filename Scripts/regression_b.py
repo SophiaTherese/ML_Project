@@ -12,7 +12,7 @@ from toolbox_02450 import rlr_validate, train_neural_net
 # Initialize: lambdas, cross-validation parameters, h-values
 lambdas = np.power(10.,np.arange(-3,2, step=0.1))
 K1 = 10
-K2 = 10
+K2 = 3
 # Parameters for neural network classifier
 h = range(1, 11)
 
