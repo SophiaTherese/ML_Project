@@ -72,9 +72,9 @@ X_reg = X_reg - np.ones((X_reg.shape[0],1))*X_reg.mean(0)
 # To standardize, we dividing by the standard deviation
 X_reg = X_reg*(1/np.std(X_reg,0))
 #np.set_printoptions(precision=2, suppress=True)
-#mean = Y.mean(0).round(8)+0.0
-#std = np.std(Y,0)
-#print('Mean:', mean, '- std:', std)
+# mean = X_reg.mean(0).round(8)+0.0
+# std = np.std(X_reg,0)
+# print('Mean:', mean, '- std:', std)
 
 
 # one-out-of-K encode for regression
